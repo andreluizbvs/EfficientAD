@@ -14,10 +14,19 @@ from common import get_autoencoder, get_pdn_small, get_pdn_medium, \
     ImageFolderWithoutTarget, ImageFolderWithPath, InfiniteDataloader
 from sklearn.metrics import roc_auc_score
 
+# constants
+seed = 42
+on_gpu = torch.cuda.is_available()
+print(f"Is GPU available: {on_gpu}")
+device = torch.device("cuda" if on_gpu else "cpu")
+out_channels = 384
+image_size = 256
+batch_sz = 8
+
 def get_argparse():
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--dataset', default='mvtec_ad',
-                        choices=['mvtec_ad', 'mvtec_loco'])
+                        choices=['mvtec_ad', 'mvtec_loco', 'insplad'])
     parser.add_argument('-s', '--subdataset', default='bottle',
                         help='One of 15 sub-datasets of Mvtec AD or 5' +
                              'sub-datasets of Mvtec LOCO')
@@ -36,14 +45,8 @@ def get_argparse():
     parser.add_argument('-b', '--mvtec_loco_path',
                         default='./mvtec_loco_anomaly_detection',
                         help='Downloaded Mvtec LOCO dataset')
-    parser.add_argument('-t', '--train_steps', type=int, default=70000)
+    parser.add_argument('-t', '--train_steps', type=int, default=(70000//batch_sz))
     return parser.parse_args()
-
-# constants
-seed = 42
-on_gpu = torch.cuda.is_available()
-out_channels = 384
-image_size = 256
 
 # data loading
 default_transform = transforms.Compose([
@@ -71,6 +74,8 @@ def main():
         dataset_path = config.mvtec_ad_path
     elif config.dataset == 'mvtec_loco':
         dataset_path = config.mvtec_loco_path
+    elif config.dataset == 'insplad':
+        dataset_path = "./insplad-uad"
     else:
         raise Exception('Unknown config.dataset')
 
@@ -92,7 +97,7 @@ def main():
         transform=transforms.Lambda(train_transform))
     test_set = ImageFolderWithPath(
         os.path.join(dataset_path, config.subdataset, 'test'))
-    if config.dataset == 'mvtec_ad':
+    if config.dataset == 'mvtec_ad' or config.dataset == 'insplad':
         # mvtec dataset paper recommend 10% validation set
         train_size = int(0.9 * len(full_train_set))
         validation_size = len(full_train_set) - train_size
@@ -110,10 +115,10 @@ def main():
         raise Exception('Unknown config.dataset')
 
 
-    train_loader = DataLoader(train_set, batch_size=1, shuffle=True,
+    train_loader = DataLoader(train_set, batch_size=batch_sz, shuffle=True,
                               num_workers=4, pin_memory=True)
     train_loader_infinite = InfiniteDataloader(train_loader)
-    validation_loader = DataLoader(validation_set, batch_size=1)
+    validation_loader = DataLoader(validation_set, batch_size=batch_sz)
 
     if pretrain_penalty:
         # load pretraining data for penalty
