@@ -21,7 +21,7 @@ print(f"Is GPU available: {on_gpu}")
 device = torch.device("cuda" if on_gpu else "cpu")
 out_channels = 384
 image_size = 256
-batch_sz = 8
+batch_sz = 1
 
 def get_argparse():
     parser = argparse.ArgumentParser()
@@ -30,7 +30,7 @@ def get_argparse():
     parser.add_argument('-s', '--subdataset', default='bottle',
                         help='One of 15 sub-datasets of Mvtec AD or 5' +
                              'sub-datasets of Mvtec LOCO')
-    parser.add_argument('-o', '--output_dir', default='output/1')
+    parser.add_argument('-o', '--output_dir', default='output/')
     parser.add_argument('-m', '--model_size', default='small',
                         choices=['small', 'medium'])
     parser.add_argument('-w', '--weights', default='models/teacher_small.pth')
@@ -63,6 +63,11 @@ transform_ae = transforms.RandomChoice([
 def train_transform(image):
     return default_transform(image), default_transform(transform_ae(image))
 
+def get_exp_number(output_dir):
+    if not os.path.exists(output_dir):
+        return 1
+    return len(os.listdir(output_dir)) + 1
+
 def main():
     torch.manual_seed(seed)
     np.random.seed(seed)
@@ -84,9 +89,11 @@ def main():
         pretrain_penalty = False
 
     # create output dir
-    train_output_dir = os.path.join(config.output_dir, 'trainings',
+    exp_number = get_exp_number(config.output_dir)
+    out_dir = os.path.join(config.output_dir, str(exp_number))
+    train_output_dir = os.path.join(out_dir, 'trainings',
                                     config.dataset, config.subdataset)
-    test_output_dir = os.path.join(config.output_dir, 'anomaly_maps',
+    test_output_dir = os.path.join(out_dir, 'anomaly_maps',
                                    config.dataset, config.subdataset, 'test')
     os.makedirs(train_output_dir)
     os.makedirs(test_output_dir)
@@ -162,6 +169,7 @@ def main():
         autoencoder.cuda()
 
     teacher_mean, teacher_std = teacher_normalization(teacher, train_loader)
+    torch.save({'teacher_mean': teacher_mean, 'teacher_std': teacher_std}, f'{config.subdataset}_mean_std.pth')
 
     optimizer = torch.optim.Adam(itertools.chain(student.parameters(),
                                                  autoencoder.parameters()),
@@ -207,11 +215,11 @@ def main():
         optimizer.step()
         scheduler.step()
 
-        if iteration % 10 == 0:
+        if iteration % max(10//batch_sz, 1) == 0:
             tqdm_obj.set_description(
                 "Current loss: {:.4f}  ".format(loss_total.item()))
 
-        if iteration % 1000 == 0:
+        if iteration % 1000//batch_sz == 0:
             torch.save(teacher, os.path.join(train_output_dir,
                                              'teacher_tmp.pth'))
             torch.save(student, os.path.join(train_output_dir,
@@ -219,7 +227,7 @@ def main():
             torch.save(autoencoder, os.path.join(train_output_dir,
                                                  'autoencoder_tmp.pth'))
 
-        if iteration % 10000 == 0 and iteration > 0:
+        if iteration % (10000//batch_sz) == 0 and iteration > 0:
             # run intermediate evaluation
             teacher.eval()
             student.eval()
