@@ -1,0 +1,13 @@
+{
+    "vari-grip": {
+        "au_pro": null,
+        "classification_au_roc": 0.0,
+        "classification_roc_curve_fpr": [
+            1.0
+        ],
+        "classification_roc_curve_tpr": [
+            1.0
+        ]
+    },
+    "mean_classification_au_roc": 0.0
+}

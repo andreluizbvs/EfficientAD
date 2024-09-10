@@ -1,0 +1,23 @@
+python efficientad.py --dataset insplad --subdataset glass-insulator
+python efficientad.py --dataset insplad --subdataset lightning-rod-suspension
+python efficientad.py --dataset insplad --subdataset polymer-insulator-upper-shackle
+python efficientad.py --dataset insplad --subdataset yoke-suspension
+python efficientad.py --dataset insplad --subdataset vari-grip
+python efficientad.py --dataset insplad --subdataset damper-preformed
+python efficientad.py --dataset insplad --subdataset damper-stockbridge
+python efficientad.py --dataset insplad --subdataset glass-insulator-big-shackle
+python efficientad.py --dataset insplad --subdataset glass-insulator-small-shackle
+python efficientad.py --dataset insplad --subdataset glass-insulator-tower-shackle
+python efficientad.py --dataset insplad --subdataset lightning-rod-shackle
+python efficientad.py --dataset insplad --subdataset plate
+python efficientad.py --dataset insplad --subdataset polymer-insulator
+python efficientad.py --dataset insplad --subdataset polymer-insulator-lower-shackle
+python efficientad.py --dataset insplad --subdataset polymer-insulator-tower-shackle
+python efficientad.py --dataset insplad --subdataset spacer
+python efficientad.py --dataset insplad --subdataset yoke
+
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/10/anomaly_maps/insplad/' --output_dir './output/10/metrics/mvtec_ad/' --evaluated_objects vari-grip
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/9/anomaly_maps/insplad/' --output_dir './output/9/metrics/mvtec_ad/' --evaluated_objects yoke-suspension
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/8/anomaly_maps/insplad/' --output_dir './output/8/metrics/mvtec_ad/' --evaluated_objects polymer-insulator-upper-shackle
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/7/anomaly_maps/insplad/' --output_dir './output/7/metrics/mvtec_ad/' --evaluated_objects lightning-rod-suspension
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/5/anomaly_maps/insplad/' --output_dir './output/5/metrics/mvtec_ad/' --evaluated_objects glass-insulator
