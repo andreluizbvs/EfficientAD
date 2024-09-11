@@ -225,10 +225,6 @@ def main():
         autoencoder.cuda()
 
     teacher_mean, teacher_std = teacher_normalization(teacher, train_loader)
-    torch.save(
-        {"teacher_mean": teacher_mean, "teacher_std": teacher_std},
-        f"{config.subdataset}_mean_std.pth",
-    )
 
     optimizer = torch.optim.Adam(
         itertools.chain(student.parameters(), autoencoder.parameters()),
@@ -349,6 +345,15 @@ def main():
         teacher_mean=teacher_mean,
         teacher_std=teacher_std,
         desc="Final map normalization",
+    )
+    torch.save(
+        {"teacher_mean": teacher_mean, 
+         "teacher_std": teacher_std,
+         "q_st_start": q_st_start,
+         "q_st_end": q_st_end,
+         "q_ae_start": q_ae_start,
+         "q_ae_end": q_ae_end},
+        f"{config.subdataset}_mean_std.pth",
     )
     auc = test(
         test_set=test_set,

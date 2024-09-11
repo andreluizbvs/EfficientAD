@@ -4,17 +4,45 @@ Various utility functions for:
     - computing the area under a curve.
     - generating a toy dataset to test the evaluation script.
 """
+
 from bisect import bisect
 import os
 
 import numpy as np
 import tifffile as tiff
 
-OBJECT_NAMES = ['bottle', 'cable', 'capsule', 'carpet', 'grid',
-                'hazelnut', 'leather', 'metal_nut', 'pill', 'screw',
-                'tile', 'toothbrush', 'transistor', 'wood', 'zipper',
-                'glass-insulator', 'yoke-suspension', 'vari-grip', 
-                'polymer-insulator-upper-shackle', 'lightning-rod-suspension']
+OBJECT_NAMES = [
+    "bottle",
+    "cable",
+    "capsule",
+    "carpet",
+    "grid",
+    "hazelnut",
+    "leather",
+    "metal_nut",
+    "pill",
+    "screw",
+    "tile",
+    "toothbrush",
+    "transistor",
+    "wood",
+    "zipper",
+    "glass-insulator",
+    "yoke-suspension",
+    "vari-grip",
+    "polymer-insulator-upper-shackle",
+    "lightning-rod-suspension",
+    "damper-preformed",
+    "damper-stockbridge",
+    "glass-insulator-big-shackle",
+    "glass-insulator-small-shackle",
+    "glass-insulator-tower-shackle",
+    "lightning-rod-shackle",
+    "plate",
+    "polymer-insulator",
+    "polymer-insulator-lower-shackle",
+    "polymer-insulator-tower-shackle",
+]
 
 
 def trapezoid(x, y, x_max=None):
@@ -45,13 +73,15 @@ def trapezoid(x, y, x_max=None):
     y = np.asarray(y)
     finite_mask = np.logical_and(np.isfinite(x), np.isfinite(y))
     if not finite_mask.all():
-        print("WARNING: Not all x and y values passed to trapezoid(...)"
-              " are finite. Will continue with only the finite values.")
+        print(
+            "WARNING: Not all x and y values passed to trapezoid(...)"
+            " are finite. Will continue with only the finite values."
+        )
     x = x[finite_mask]
     y = y[finite_mask]
 
     # Introduce a correction term if max_x is not an element of x.
-    correction = 0.
+    correction = 0.0
     if x_max is not None:
         if x_max not in x:
             # Get the insertion index that would keep x sorted after
@@ -64,9 +94,11 @@ def trapezoid(x, y, x_max=None):
             # Calculate the correction term which is the integral between
             # the last x[ins-1] and x_max. Since we do not know the exact value
             # of y at x_max, we interpolate between y[ins] and y[ins-1].
-            y_interp = y[ins - 1] + ((y[ins] - y[ins - 1]) *
-                                     (x_max - x[ins - 1]) /
-                                     (x[ins] - x[ins - 1]))
+            y_interp = y[ins - 1] + (
+                (y[ins] - y[ins - 1])
+                * (x_max - x[ins - 1])
+                / (x[ins] - x[ins - 1])
+            )
             correction = 0.5 * (y_interp + y[ins - 1]) * (x_max - x[ins - 1])
 
         # Cut off at x_max.
@@ -78,7 +110,7 @@ def trapezoid(x, y, x_max=None):
     return np.sum(0.5 * (y[1:] + y[:-1]) * (x[1:] - x[:-1])) + correction
 
 
-def read_tiff(file_path_no_ext, exts=('.tif', '.tiff', '.TIF', '.TIFF')):
+def read_tiff(file_path_no_ext, exts=(".tif", ".tiff", ".TIF", ".TIFF")):
     """Read a TIFF file from a given path without the TIFF extension.
 
     Args:
@@ -101,13 +133,17 @@ def read_tiff(file_path_no_ext, exts=('.tif', '.tiff', '.TIF', '.TIFF')):
             file_paths.append(file_path)
 
     if len(file_paths) == 0:
-        raise FileNotFoundError('Could not find a file with a TIFF extension'
-                                f' at {file_path_no_ext}')
+        raise FileNotFoundError(
+            "Could not find a file with a TIFF extension"
+            f" at {file_path_no_ext}"
+        )
     elif len(file_paths) > 1:
-        raise IOError('Found multiple files with a TIFF extension at'
-                      f' {file_path_no_ext}'
-                      '\nPlease specify which TIFF extension to use via the'
-                      ' `exts` parameter of this function.')
+        raise IOError(
+            "Found multiple files with a TIFF extension at"
+            f" {file_path_no_ext}"
+            "\nPlease specify which TIFF extension to use via the"
+            " `exts` parameter of this function."
+        )
 
     return tiff.imread(file_paths[0])
 

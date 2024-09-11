@@ -1,0 +1,41 @@
+ damper-stockbridge
+Image-level classification AU-ROC: 0.7599411839918169
+
+ glass-insulator-big-shackle
+Image-level classification AU-ROC: 0.7230769230769231
+
+ glass-insulator-small-shackle
+Image-level classification AU-ROC: 0.9433962264150944
+
+ glass-insulator-tower-shackle
+Image-level classification AU-ROC: 0.7285714285714286
+
+ lightning-rod-shackle
+Image-level classification AU-ROC: 0.35
+
+ plate
+Image-level classification AU-ROC: 0.90625
+
+ polymer-insulator
+Image-level classification AU-ROC: 0.6137490608564989
+
+ polymer-insulator-lower-shackle
+Image-level classification AU-ROC: 0.8344158050580069
+
+ polymer-insulator-tower-shackle
+Image-level classification AU-ROC: 0.8
+
+ vari-grip
+Image-level classification AU-ROC: 0.843859649122807
+
+ yoke-suspension
+Image-level classification AU-ROC: 0.8521718546573559
+
+ polymer-insulator-upper-shackle
+Image-level classification AU-ROC: 0.7762619941593659
+
+ lightning-rod-suspension
+Image-level classification AU-ROC: 0.876625789669268
+
+ glass-insulator
+Image-level classification AU-ROC: 0.7754576219043224

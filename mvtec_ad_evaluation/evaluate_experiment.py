@@ -97,12 +97,14 @@ def parse_dataset_files(object_name, dataset_base_dir, anomaly_maps_dir):
 
         # If subdir is not 'good', derive corresponding GT names.
         if subdir != 'good':
-            gt_filenames.extend(
-                [path.join(gt_base_dir, subdir, file + '_mask.jpg')
-                 for file in test_images])
+            # gt_filenames.extend(
+            #     [path.join(gt_base_dir, subdir, file + '_mask.jpg')
+            #      for file in test_images])
+            gt_filenames.extend([1] * len(test_images))
         else:
             # No ground truth maps exist for anomaly-free images.
-            gt_filenames.extend([None] * len(test_images))
+            # gt_filenames.extend([None] * len(test_images))
+            gt_filenames.extend([0] * len(test_images))
 
         # Fetch corresponding anomaly maps.
         prediction_filenames.extend(
@@ -139,36 +141,43 @@ def calculate_au_pro_au_roc(gt_filenames,
         roc_curve: ROC curve values for image level classifiction (fpr,tpr).
     """
     # Read all ground truth and anomaly images.
-    ground_truth = []
+    # ground_truth = []
     predictions = []
 
     print("Read ground truth files and corresponding predictions...")
-    for (gt_name, pred_name) in tqdm(zip(gt_filenames, prediction_filenames),
-                                     total=len(gt_filenames)):
-        prediction = util.read_tiff(pred_name)
+
+    for pred_name in tqdm(prediction_filenames):
+        fixed_pred_name = ".".join(pred_name.split('.')[:2]).replace("_jpg", "").replace("Fotos-", "Fotos ").replace("(1)", "")
+        prediction = util.read_tiff(fixed_pred_name)
         predictions.append(prediction)
+    
+    # for (gt_name, pred_name) in tqdm(zip(gt_filenames, prediction_filenames),
+    #                                  total=len(gt_filenames)):
+    #     prediction = util.read_tiff(pred_name)
+    #     predictions.append(prediction)
 
-        if gt_name is not None:
-            ground_truth.append(np.asarray(Image.open(gt_name)))
-        else:
-            ground_truth.append(np.zeros(prediction.shape))
+    #     if gt_name is not None:
+    #         ground_truth.append(np.asarray(Image.open(gt_name)))
+    #     else:
+    #         ground_truth.append(np.zeros(prediction.shape))
 
-    # Compute the PRO curve.
-    pro_curve = compute_pro(
-        anomaly_maps=predictions,
-        ground_truth_maps=ground_truth)
+    # # Compute the PRO curve.
+    # pro_curve = compute_pro(
+    #     anomaly_maps=predictions,
+    #     ground_truth_maps=ground_truth)
 
-    # Compute the area under the PRO curve.
-    au_pro = util.trapezoid(
-        pro_curve[0], pro_curve[1], x_max=integration_limit)
-    au_pro /= integration_limit
-    print(f"AU-PRO (FPR limit: {integration_limit}): {au_pro}")
+    # # Compute the area under the PRO curve.
+    # au_pro = util.trapezoid(
+    #     pro_curve[0], pro_curve[1], x_max=integration_limit)
+    # au_pro /= integration_limit
+    # print(f"AU-PRO (FPR limit: {integration_limit}): {au_pro}")
 
     # Derive binary labels for each input image:
     # (0 = anomaly free, 1 = anomalous).
-    binary_labels = [int(np.any(x > 0)) for x in ground_truth]
-    del ground_truth
+    # binary_labels = [int(np.any(x > 0)) for x in ground_truth]
+    # del ground_truth
 
+    binary_labels = [int(np.any(x > 0)) for x in gt_filenames]
     # Compute the classification ROC curve.
     roc_curve = compute_classification_roc(
         anomaly_maps=predictions,
@@ -180,7 +189,8 @@ def calculate_au_pro_au_roc(gt_filenames,
     print(f"Image-level classification AU-ROC: {au_roc}")
 
     # Return the evaluation metrics.
-    return au_pro, au_roc, pro_curve, roc_curve
+    # return au_pro, au_roc, pro_curve, roc_curve
+    return None, au_roc, None, roc_curve
 
 
 def main():
@@ -230,7 +240,7 @@ def main():
         print('\n')
 
     # Compute the mean of the performance measures.
-    evaluation_dict['mean_au_pro'] = np.mean(au_pros).item()
+    # evaluation_dict['mean_au_pro'] = np.mean(au_pros).item()
     evaluation_dict['mean_classification_au_roc'] = np.mean(au_rocs).item()
 
     # If required, write evaluation metrics to drive.

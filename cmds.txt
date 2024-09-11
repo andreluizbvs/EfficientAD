@@ -16,6 +16,17 @@ python efficientad.py --dataset insplad --subdataset polymer-insulator-tower-sha
 python efficientad.py --dataset insplad --subdataset spacer
 python efficientad.py --dataset insplad --subdataset yoke
 
+
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/11/anomaly_maps/insplad/' --output_dir './output/11/metrics/mvtec_ad/' --evaluated_objects damper-preformed
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/12/anomaly_maps/insplad/' --output_dir './output/12/metrics/mvtec_ad/' --evaluated_objects damper-stockbridge
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/13/anomaly_maps/insplad/' --output_dir './output/13/metrics/mvtec_ad/' --evaluated_objects glass-insulator-big-shackle
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/14/anomaly_maps/insplad/' --output_dir './output/14/metrics/mvtec_ad/' --evaluated_objects glass-insulator-small-shackle
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/15/anomaly_maps/insplad/' --output_dir './output/15/metrics/mvtec_ad/' --evaluated_objects glass-insulator-tower-shackle
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/16/anomaly_maps/insplad/' --output_dir './output/16/metrics/mvtec_ad/' --evaluated_objects lightning-rod-shackle
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/17/anomaly_maps/insplad/' --output_dir './output/17/metrics/mvtec_ad/' --evaluated_objects plate
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/18/anomaly_maps/insplad/' --output_dir './output/18/metrics/mvtec_ad/' --evaluated_objects polymer-insulator
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/19/anomaly_maps/insplad/' --output_dir './output/19/metrics/mvtec_ad/' --evaluated_objects polymer-insulator-lower-shackle
+python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/20/anomaly_maps/insplad/' --output_dir './output/20/metrics/mvtec_ad/' --evaluated_objects polymer-insulator-tower-shackle
 python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/10/anomaly_maps/insplad/' --output_dir './output/10/metrics/mvtec_ad/' --evaluated_objects vari-grip
 python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/9/anomaly_maps/insplad/' --output_dir './output/9/metrics/mvtec_ad/' --evaluated_objects yoke-suspension
 python mvtec_ad_evaluation/evaluate_experiment.py --dataset_base_dir './insplad-uad/' --anomaly_maps_dir './output/8/anomaly_maps/insplad/' --output_dir './output/8/metrics/mvtec_ad/' --evaluated_objects polymer-insulator-upper-shackle
